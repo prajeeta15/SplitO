@@ -16,7 +16,7 @@ from .seeds import seed_commands
 from .config import DevelopmentConfig, ProductionConfig
 
 app = Flask(__name__)
-
+csrf = CSRFProtect(app)
 # Load environment-specific config
 if os.getenv("FLASK_ENV") == "production":
     app.config.from_object(ProductionConfig)
