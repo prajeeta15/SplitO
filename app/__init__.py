@@ -82,3 +82,6 @@ def api_help():
         if rule.endpoint != 'static'
     }
     return route_list
+@auth_routes.route('/csrf-token', methods=['GET'])
+def csrf_token():
+    return {'csrf_token': generate_csrf()}
