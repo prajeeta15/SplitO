@@ -15,7 +15,7 @@ from .api.friend_routes import friends_routes
 from .seeds import seed_commands
 from .config import Config
 from flask import Flask
-from config import DevelopmentConfig, ProductionConfig
+from .config import DevelopmentConfig, ProductionConfig
 app = Flask(__name__, static_folder='../react-app/build', static_url_path='/')
 
 # Setup login manager
