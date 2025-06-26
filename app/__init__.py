@@ -4,7 +4,6 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect, generate_csrf
 from flask_login import LoginManager
-
 from .models import db, User
 from .api.user_routes import user_routes
 from .api.expense_routes import expense_routes
@@ -26,10 +25,7 @@ else:
 # Initialize extensions
 db.init_app(app)
 Migrate(app, db)
-from flask_cors import CORS
-
-CORS(app, origins=["https://split-ju3votjii-prajeetas-projects.vercel.app"], supports_credentials=True)
-
+CORS(app, origins=[r"https://.*\.vercel\.app"], supports_credentials=True, regex=True)
 
 # Login manager
 login = LoginManager(app)
