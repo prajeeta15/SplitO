@@ -3,11 +3,13 @@
   justify-content: space-between;
   align-items: center;
   background-color: #121212;
-  padding: 0.75rem 2rem;
+  padding: 0.5rem 1.5rem;
   color: white;
   position: sticky;
   top: 0;
   z-index: 10;
+  height: 60px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-logo {
@@ -16,13 +18,19 @@
   text-decoration: none;
   color: white;
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
 }
 
 .navbar-logo img {
   width: 32px;
   height: 32px;
   margin-right: 0.5rem;
+  object-fit: contain;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
 }
 
 .navbar-right .nav-link {
@@ -30,6 +38,7 @@
   text-decoration: none;
   color: #10c19f;
   font-weight: 500;
+  font-size: 1rem;
   transition: color 0.2s;
 }
 
