@@ -42,7 +42,7 @@ const SignUpForm = () => {
   if (user) return <Redirect to='/dashboard' />;
 
   return (
-    <>
+    <div>
     <NavBar />
     <div id ='signup-form-container'>
       <div className="auth-background" style={{ backgroundImage: `url(${background})` }}>
@@ -85,10 +85,10 @@ const SignUpForm = () => {
           </div>
           <button type="submit" className="auth-submit-btn">Sign Up</button>
         </form>
-            </div>
+        </div>
       </div>
       <img className="footer" src={footer} alt="footer" />
-    </>
+    </div>
   );
 };
 
