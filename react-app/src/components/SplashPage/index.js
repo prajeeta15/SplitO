@@ -143,31 +143,7 @@ export default function SplashPage() {
                     </a>
                     <img className='each-review' src={review6} alt='review'/>
                 </div>
-            </div>
-            {/* <img className='footer' src={more} alt='more'></img> */}
-            <div className='developers-bar'>
-                <div>Developers:</div>
-                <div className='each-developer'>Brandon Shin
-                    <a href='https://github.com/bshinnny'>
-                        <img className='github-img' src={github} alt='github'></img>
-                    </a>
-                </div>
-                <div className='each-developer'>Edmund Ju
-                    <a href='https://github.com/edmundj0'>
-                        <img className='github-img' src={github} alt='github'></img>
-                    </a>
-                </div>
-                <div className='each-developer'>Lijuan Xu
-                    <a href='https://github.com/XU1204'>
-                        <img className='github-img' src={github} alt='github'></img>
-                    </a>
-                </div>
-                <div className='each-developer'>Vivian Wang
-                    <a href='https://github.com/MangoPie888'>
-                        <img className='github-img' src={github} alt='github'></img>
-                    </a>
-                </div>
-            </div>
+            </div>               
             <img className='footer' src={footer} alt='footer'></img>
         </div>
     )
