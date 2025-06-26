@@ -16,6 +16,7 @@ import review4 from '../../assets/review4.png'
 import review5 from '../../assets/review5.png'
 import review6 from '../../assets/review6.png'
 import github from '../../assets/github.png'
+import NavBar from '../NavBar';
 
 export default function SplashPage() {
 
@@ -49,6 +50,7 @@ export default function SplashPage() {
     },[])
 
     return (
+         <NavBar />
         <div className="entire-page-container">
             <div className="white-container" style={{ backgroundImage: `url(${background})`}}>
                 <div className="white-left-container">
