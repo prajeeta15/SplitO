@@ -94,19 +94,15 @@ def api_help():
     return route_list
 
 
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def react_root(path):
+@app.route("/api/docs")
+def api_help():
     """
-    This route will direct to the public directory in our
-    react builds in the production environment for favicon
-    or index.html requests
+    Returns all API routes and their doc strings
     """
-    if path == 'favicon.ico':
-        return app.send_from_directory('public', 'favicon.ico')
-    return app.send_static_file('index.html')
-
-
-@app.errorhandler(404)
-def not_found(e):
-    return app.send_static_file('index.html')
+    acceptable_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
+    route_list = {
+        rule.rule: [[method for method in rule.methods if method in acceptable_methods],
+                    app.view_functions[rule.endpoint].__doc__]
+        for rule in app.url_map.iter_rules() if rule.endpoint != 'static'
+    }
+    return route_list
