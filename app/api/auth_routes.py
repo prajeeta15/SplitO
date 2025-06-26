@@ -88,10 +88,7 @@ def unauthorized():
 
 from flask_wtf.csrf import generate_csrf
 
-@auth_routes.route('/csrf-token', methods=['GET'])
-def get_csrf_token():
-    """
-    Returns a CSRF token.
-    """
-    return jsonify({'csrf_token': generate_csrf()})
+@auth_routes.route('/csrf-token')
+def csrf_token():
+    return {'csrf_token': generate_csrf()}
 
