@@ -26,7 +26,10 @@ else:
 # Initialize extensions
 db.init_app(app)
 Migrate(app, db)
-CORS(app)
+from flask_cors import CORS
+
+CORS(app, origins=["https://split-ju3votjii-prajeetas-projects.vercel.app"], supports_credentials=True)
+
 
 # Login manager
 login = LoginManager(app)
