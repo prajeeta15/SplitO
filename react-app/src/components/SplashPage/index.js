@@ -51,7 +51,7 @@ export default function SplashPage() {
     },[])
 
     return (
-         <>
+         <div>
          <NavBar />
         <div className="entire-page-container">
             <div className="white-container" style={{ backgroundImage: `url(${background})`}}>
@@ -150,7 +150,7 @@ export default function SplashPage() {
             </div>               
             <img className='footer' src={footer} alt='footer'></img>
         </div>
-     </>
+     </div>
     );
 };
 export default SplashPage;
