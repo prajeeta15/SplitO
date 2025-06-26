@@ -5,6 +5,7 @@ import { signUp } from '../../store/session';
 import background from '../../assets/background.png';
 import footer from '../../assets/footer.png';
 import './auth.css';
+import NavBar from '../NavBar';
 
 const SignUpForm = () => {
   const [errors, setErrors] = useState([]);
@@ -41,6 +42,7 @@ const SignUpForm = () => {
 
   return (
     <>
+    <NavBar />
       <div className="auth-background" style={{ backgroundImage: `url(${background})` }}>
         <form className="auth-form" onSubmit={onSignUp}>
           <h2>Create Your Account</h2>
