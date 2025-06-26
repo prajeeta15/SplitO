@@ -5,7 +5,7 @@ import { signUp } from '../../store/session';
 import background from '../../assets/background.png';
 import footer from '../../assets/footer.png';
 import './auth.css';
-import NavBar from '../NavBar/NavBar';
+import NavBar from '../NavBar.css';
 
 const SignUpForm = () => {
   const [errors, setErrors] = useState([]);
