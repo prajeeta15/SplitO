@@ -44,6 +44,7 @@ const SignUpForm = () => {
   return (
     <>
     <NavBar />
+    <div id ='signup-form-container'>
       <div className="auth-background" style={{ backgroundImage: `url(${background})` }}>
         <form className="auth-form" onSubmit={onSignUp}>
           <h2>Create Your Account</h2>
@@ -84,6 +85,7 @@ const SignUpForm = () => {
           </div>
           <button type="submit" className="auth-submit-btn">Sign Up</button>
         </form>
+            </div>
       </div>
       <img className="footer" src={footer} alt="footer" />
     </>
