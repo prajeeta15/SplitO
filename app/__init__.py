@@ -14,14 +14,26 @@ from .api.friend_routes import friends_routes
 
 from .seeds import seed_commands
 from .config import Config
-
+from flask import Flask
+from config import DevelopmentConfig, ProductionConfig
 app = Flask(__name__, static_folder='../react-app/build', static_url_path='/')
 
 # Setup login manager
 login = LoginManager(app)
 login.login_view = 'auth.unauthorized'
 
+def create_app():
+    app = Flask(__name__)
 
+    if os.getenv("FLASK_ENV") == "production":
+        app.config.from_object(ProductionConfig)
+    else:
+        app.config.from_object(DevelopmentConfig)
+
+    # initialize extensions like db, migrate, etc.
+    # db.init_app(app)
+
+    return app
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
