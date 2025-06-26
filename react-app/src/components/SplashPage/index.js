@@ -51,6 +51,7 @@ export default function SplashPage() {
     },[])
 
     return (
+         <>
          <NavBar />
         <div className="entire-page-container">
             <div className="white-container" style={{ backgroundImage: `url(${background})`}}>
