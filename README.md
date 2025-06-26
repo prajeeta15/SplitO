@@ -6,6 +6,8 @@ Splito is a full-stack expense-splitting application inspired by Splitwise. It a
 
 This project is built to demonstrate full-stack development skills and meets the assignment requirements for the **Neurix Full-Stack SDE Intern role**.
 
+[https://split-m4p7ya1kb-prajeetas-projects.vercel.app/]
+
 ---
 
 ## 🧰 Tech Stack
