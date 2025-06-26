@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    ports:
+      - "8000:5000"
+    environment:
+      - FLASK_ENV=production
+      - DATABASE_URL=your_postgres_url_here
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB=splito
+      POSTGRES_USER=postgres
+      POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
