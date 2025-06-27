@@ -13,8 +13,9 @@ export default function CreateExpenseModal({ setShowModal, expense, setHasSubmit
     const [recipientEmail, setRecipientEmail] = useState("")
     const [errors, setErrors] = useState([])
 
-    let currentUserEmail = useSelector(state => state.session.user.email)
-    let currentUserId = useSelector(state => state.session.user.id)
+   const user = useSelector(state => state.session.user);
+    let currentUserEmail = user?.email || '';
+    let currentUserId = user?.id || null;
     const history = useHistory()
 
     // useEffect(() => {
