@@ -5,61 +5,75 @@ const REMOVE_USER = 'session/REMOVE_USER';
 const BASE_URL =
   process.env.NODE_ENV === 'production'
     ? 'https://splito.onrender.com'
-    : '';
+    : 'http://localhost:8000'; // fallback for local dev
 
+// actions
 const setUser = (user) => ({
   type: SET_USER,
-  payload: user
+  payload: user,
 });
 
 const removeUser = () => ({
   type: REMOVE_USER,
-})
+});
 
 const initialState = { user: null };
 
+// helpers
+const handleJSONResponse = async (response) => {
+  try {
+    return await response.json();
+  } catch (err) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Failed to parse JSON response', err);
+    }
+    return { errors: ['Unexpected server response.'] };
+  }
+};
+
+// thunks
 export const authenticate = () => async (dispatch) => {
   const response = await fetch(`${BASE_URL}/api/auth/`, {
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
-    credentials: 'include'
+    credentials: 'include',
   });
+
   if (response.ok) {
-    const data = await response.json();
-    if (data.errors) return;
-    dispatch(setUser(data));
+    const data = await handleJSONResponse(response);
+    if (!data.errors) dispatch(setUser(data));
   }
-}
+};
 
 export const login = (email, password) => async (dispatch) => {
   const response = await fetch(`${BASE_URL}/api/auth/login`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
     credentials: 'include',
-    body: JSON.stringify({ email, password })
+    body: JSON.stringify({ email, password }),
   });
 
+  const data = await handleJSONResponse(response);
+
   if (response.ok) {
-    const data = await response.json();
     dispatch(setUser(data));
     return null;
   } else if (response.status < 500) {
-    const data = await response.json();
-    if (data.errors) return data.errors;
+    return data.errors || ['Login failed'];
   } else {
     return ['An error occurred. Please try again.'];
   }
-}
+};
 
 export const logout = () => async (dispatch) => {
   const response = await fetch(`${BASE_URL}/api/auth/logout`, {
     headers: {
       'Content-Type': 'application/json',
     },
-    credentials: 'include'
+    credentials: 'include',
   });
 
   if (response.ok) {
@@ -80,28 +94,29 @@ export const signUp = (username, email, password, firstName, lastName, nickname)
       password,
       firstName,
       lastName,
-      nickname
+      nickname,
     }),
   });
 
+  const data = await handleJSONResponse(response);
+
   if (response.ok) {
-    const data = await response.json();
     dispatch(setUser(data));
     return null;
   } else if (response.status < 500) {
-    const data = await response.json();
-    if (data.errors) return data.errors;
+    return data.errors || ['Signup failed'];
   } else {
     return ['An error occurred. Please try again.'];
   }
-}
+};
 
-export default function reducer(state = initialState, action) {
+// reducer
+export default function sessionReducer(state = initialState, action) {
   switch (action.type) {
     case SET_USER:
-      return { user: action.payload }
+      return { user: action.payload };
     case REMOVE_USER:
-      return { user: null }
+      return { user: null };
     default:
       return state;
   }
