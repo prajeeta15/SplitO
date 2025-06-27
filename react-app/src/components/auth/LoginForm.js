@@ -7,6 +7,11 @@ import './auth.css'
 import footer from '../../assets/footer.png'
 import github from '../../assets/github.png'
 
+function getCSRFToken() {
+  const match = document.cookie.match(/csrf_token=([^;]+)/);
+  return match ? match[1] : null;
+}
+
 const LoginForm = () => {
   const [errors, setErrors] = useState([]);
   const [email, setEmail] = useState('');
@@ -16,16 +21,18 @@ const LoginForm = () => {
 
   const onLogin = async (e) => {
     e.preventDefault();
+    await fetch(`/api/auth/csrf-token`, { credentials: 'include' });
     const data = await dispatch(login(email, password));
     if (data) {
       setErrors(data);
     }
   };
 
-  const demoLogin = () => {
-    setEmail('demo@aa.io');
-    setPassword('password')
-  }
+  const demoLogin = async () => {
+  await fetch(`/api/auth/csrf-token`, { credentials: 'include' });
+  const data = await dispatch(login('demo@aa.io', 'password'));
+  if (data) setErrors(data);
+};
 
   const updateEmail = (e) => {
     setEmail(e.target.value);
@@ -72,7 +79,7 @@ const LoginForm = () => {
         </div>
         <button id='login-form-button' type='submit'>Log in</button>
         <p>------- or --------</p>
-        <button id='demo-user-button' type='submit' onClick={() => demoLogin()}>Log in with demo user</button>
+        <button type='button' onClick={demoLogin}>Log in with demo user</button>
       </form>
     </div>
    
