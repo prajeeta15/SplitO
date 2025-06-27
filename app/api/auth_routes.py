@@ -1,10 +1,11 @@
-from flask import Blueprint, jsonify, session, request
+from flask import Blueprint, request, jsonify, session
 from app.models import User, db
 from app.forms import LoginForm, SignUpForm
-from flask_login import current_user, login_user, logout_user, login_required
+from flask_login import login_user, logout_user, current_user, login_required
 from flask_wtf.csrf import generate_csrf
 
 auth_routes = Blueprint('auth', __name__)
+
 
 def validation_errors_to_error_messages(validation_errors):
     """
@@ -16,19 +17,21 @@ def validation_errors_to_error_messages(validation_errors):
             error_messages.append(f'{field} : {error}')
     return error_messages
 
+
 @auth_routes.route('/')
 def authenticate():
     """
-    Authenticates a user.
+    If user is authenticated, return user dict, else error.
     """
     if current_user.is_authenticated:
         return current_user.to_dict()
     return {'errors': ['Unauthorized']}, 401
 
+
 @auth_routes.route('/login', methods=['POST'])
 def login():
     """
-    Logs a user in.
+    Logs in a user.
     """
     form = LoginForm()
     form['csrf_token'].data = request.cookies.get('csrf_token')
@@ -40,19 +43,21 @@ def login():
             return user.to_dict()
     return {'errors': validation_errors_to_error_messages(form.errors)}, 400
 
+
 @auth_routes.route('/logout', methods=['POST'])
 @login_required
 def logout():
     """
-    Logs a user out.
+    Logs out the current user.
     """
     logout_user()
     return {'message': 'User logged out successfully'}, 200
 
+
 @auth_routes.route('/signup', methods=['POST'])
 def sign_up():
     """
-    Creates a new user and logs them in.
+    Signs up a new user and logs them in.
     """
     form = SignUpForm()
     form['csrf_token'].data = request.cookies.get('csrf_token')
@@ -72,16 +77,18 @@ def sign_up():
         return user.to_dict(), 201
     return {'errors': validation_errors_to_error_messages(form.errors)}, 400
 
+
 @auth_routes.route('/unauthorized')
 def unauthorized():
     """
-    Returns unauthorized JSON when authentication fails.
+    Returns unauthorized JSON if login required.
     """
     return {'errors': ['Unauthorized']}, 401
 
-@auth_routes.route('/csrf-token')
+
+@auth_routes.route('/csrf-token', methods=['GET'])
 def csrf_token():
     """
-    Provides a CSRF token for frontend use.
+    Provides a CSRF token for the frontend.
     """
-    return {'csrf_token': generate_csrf()}
+    return jsonify({'csrf_token': generate_csrf()})
