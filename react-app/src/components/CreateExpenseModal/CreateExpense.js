@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 import './CreateExpenseModal.css'
 
 
-export default function CreateExpense({ setShowModal, expense, setHasSubmitted }) {
+export default function CreateExpenseModal({ setShowModal, expense, setHasSubmitted }) {
     const dispatch = useDispatch()
     const [description, setDescription] = useState("")
     const [amount, setAmount] = useState(0)
