@@ -4,6 +4,11 @@ import { useHistory, useParams } from 'react-router-dom';
 import * as groupActions from '../../../store/groups';
 import './AddGroupMemberForm.css'
 
+const BASE_URL =
+  process.env.NODE_ENV === 'production'
+    ? 'https://splito.onrender.com'
+    : 'http://localhost:8000';
+
 function AddGroupMemberForm() {
     const dispatch = useDispatch();
     const history = useHistory();
@@ -16,13 +21,27 @@ function AddGroupMemberForm() {
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
-        async function fetchData() {
-            const response = await fetch('/api/users/');
-            const responseData = await response.json();
-            setUsers(responseData.users);
-        }
-        fetchData();
-    }, []);
+  async function fetchData() {
+    try {
+      const response = await fetch(`${BASE_URL}/api/users/`, {
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        console.error('Failed to fetch users:', response.statusText);
+        return;
+      }
+
+      const responseData = await response.json();
+      setUsers(responseData.users);
+    } catch (err) {
+      console.error('Fetch error:', err);
+    }
+  }
+
+  fetchData();
+}, []);
+
 
     // console.log('USERS ARRAY:', users)
     const userEmailsArr = [];
