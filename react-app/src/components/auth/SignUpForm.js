@@ -28,9 +28,12 @@ const SignUpForm = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-  fetch(`/api/auth/csrf-token`, {
-    credentials: 'include',
-  });
+  const fetchCSRF = async () => {
+    await fetch(`${BASE_URL}/api/auth/csrf-token`, {
+      credentials: 'include',
+    });
+  };
+  fetchCSRF();
 }, []);
 
   const onSignUp = async (e) => {
