@@ -1,8 +1,7 @@
-const BASE_URL =
+export const BASE_URL =
   process.env.NODE_ENV === "production"
     ? process.env.REACT_APP_BASE_URL || "https://splito.onrender.com"
     : "http://localhost:5000";
-export { BASE_URL };
 
 const getCSRFToken = async () => {
   const res = await fetch(`${BASE_URL}/api/auth/csrf-token`, {
