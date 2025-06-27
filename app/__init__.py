@@ -80,7 +80,6 @@ def inject_csrf_token(response):
     )
     return response
 
-# Optional: API docs route
 @app.route("/api/docs")
 def api_help():
     """
@@ -96,3 +95,7 @@ def api_help():
         if rule.endpoint != 'static'
     }
     return route_list
+    
+@app.route("/health")
+def health():
+    return {"status": "ok"}, 200
