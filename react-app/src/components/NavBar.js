@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 import LogoutButton from './auth/LogoutButton';
 import './NavBar.css';
 import userImg from '../assets/user.png';
-import CreateExpenseModal from '../CreateExpenseModal'; // adjust if path differs
+import CreateExpenseModal from './CreateExpenseModal'; // adjust if path differs
 
 const NavBar = () => {
   const [showMenu, setShowMenu] = useState(false);
