@@ -11,7 +11,7 @@ const getCSRFToken = async () => {
   return data.csrf_token;
 };
 
-export const fetchWithCSRF = async (url, options = {}) => {
+const fetchWithCSRF = async (url, options = {}) => {
   const csrfToken = await getCSRFToken();
 
   const opts = {
@@ -21,12 +21,27 @@ export const fetchWithCSRF = async (url, options = {}) => {
       "X-CSRFToken": csrfToken,
       ...(options.headers || {}),
     },
-    credentials: "include", // needed for cookies/session
+    credentials: "include",
   };
 
   const response = await fetch(`${BASE_URL}${url}`, opts);
-  if (!response.ok) throw new Error("API request failed");
-  return response.json();
+
+  const contentType = response.headers.get("content-type");
+
+  if (!response.ok) {
+    let errorMessage = `Error ${response.status}`;
+    if (contentType && contentType.includes("application/json")) {
+      const data = await response.json();
+      errorMessage = data.message || JSON.stringify(data);
+    }
+    throw new Error(errorMessage);
+  }
+
+  if (contentType && contentType.includes("application/json")) {
+    return response.json();
+  } else {
+    return null; // or throw error if you expect only JSON
+  }
 };
 
 export const api = {
