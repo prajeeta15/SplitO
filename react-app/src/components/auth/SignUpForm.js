@@ -14,7 +14,7 @@ const SignUpForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
-  const [firstName, setFirstName] = useState('');  // ✅ use camelCase to match session.js
+  const [firstName, setFirstName] = useState('');  
   const [lastName, setLastName] = useState('');
   const [nickname, setNickname] = useState('');
   const [loading, setLoading] = useState(false);
@@ -23,7 +23,7 @@ const SignUpForm = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-  fetch(`${BASE_URL}/api/auth/csrf-token`, {
+  fetch(`/api/auth/csrf-token`, {
     credentials: 'include',
   });
 }, []);
