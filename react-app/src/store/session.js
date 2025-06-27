@@ -1,3 +1,8 @@
+function getCSRFToken() {
+  const match = document.cookie.match(/csrf_token=([^;]+)/);
+  return match ? match[1] : null;
+}
+
 const SET_USER = 'session/SET_USER';
 const REMOVE_USER = 'session/REMOVE_USER';
 
@@ -35,11 +40,12 @@ export const authenticate = () => async (dispatch) => {
 export const login = (email, password) => async (dispatch) => {
   try {
     await fetch(`${BASE_URL}/api/auth/csrf-token`, { credentials: 'include' });
-
+    const csrfToken = getCSRFToken();
     const response = await fetch(`${BASE_URL}/api/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'X-CSRFToken': getCSRFToken(),
       },
       credentials: 'include',
       body: JSON.stringify({ email, password }),
@@ -76,11 +82,12 @@ export const logout = () => async (dispatch) => {
 export const signUp = (username, email, password, firstName, lastName, nickname) => async (dispatch) => {
   try {
     await fetch(`${BASE_URL}/api/auth/csrf-token`, { credentials: 'include' });
-
+    const csrfToken = getCSRFToken();
     const response = await fetch(`${BASE_URL}/api/auth/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'X-CSRFToken': getCSRFToken(),
       },
       credentials: 'include',
       body: JSON.stringify({
