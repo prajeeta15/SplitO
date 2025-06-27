@@ -21,12 +21,11 @@ const SignUpForm = () => {
   const user = useSelector(state => state.session.user);
   const dispatch = useDispatch();
 
-  // ✅ CSRF fetch - not required here if already done in session.js, but harmless
   useEffect(() => {
-    fetch('/api/auth/csrf-token', {
-      credentials: 'include',
-    });
-  }, []);
+  fetch(`${BASE_URL}/api/auth/csrf-token`, {
+    credentials: 'include',
+  });
+}, []);
 
   const onSignUp = async (e) => {
     e.preventDefault();
