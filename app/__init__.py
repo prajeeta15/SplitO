@@ -16,6 +16,7 @@ from .config import DevelopmentConfig, ProductionConfig
 
 app = Flask(__name__)
 csrf = CSRFProtect(app)
+
 # Load environment-specific config
 if os.getenv("FLASK_ENV") == "production":
     app.config.from_object(ProductionConfig)
@@ -25,9 +26,15 @@ else:
 # Initialize extensions
 db.init_app(app)
 Migrate(app, db)
-CORS(app, origins=[r"https://.*\.vercel\.app"], supports_credentials=True, regex=True)
 
-# Login manager
+# CORS 
+CORS(app, origins=[
+    "http://localhost:3000",                            # local React dev
+    "https://your-frontend.onrender.com",              # replace with actual domain
+    "https://your-frontend.vercel.app",                # replace if Vercel is used
+], supports_credentials=True)
+
+# Login manager setup
 login = LoginManager(app)
 login.login_view = 'auth.unauthorized'
 
@@ -46,7 +53,7 @@ app.register_blueprint(friends_routes, url_prefix='/api/friends')
 app.register_blueprint(group_routes, url_prefix='/api/groups')
 app.register_blueprint(comments_routes, url_prefix='/api')
 
-# Redirect HTTP to HTTPS in production
+# Force HTTPS in production
 @app.before_request
 def https_redirect():
     if os.getenv("FLASK_ENV") == "production":
@@ -54,18 +61,19 @@ def https_redirect():
             url = request.url.replace("http://", "https://", 1)
             return redirect(url, code=301)
 
-# Inject CSRF token
+# Set CSRF token cookie on every response
 @app.after_request
 def inject_csrf_token(response):
     response.set_cookie(
         "csrf_token",
         generate_csrf(),
         secure=os.getenv("FLASK_ENV") == "production",
-        samesite="Strict" if os.getenv("FLASK_ENV") == "production" else None,
+        samesite="None" if os.getenv("FLASK_ENV") == "production" else None,
         httponly=True
     )
     return response
 
+# Optional: API docs route
 @app.route("/api/docs")
 def api_help():
     """
@@ -81,4 +89,3 @@ def api_help():
         if rule.endpoint != 'static'
     }
     return route_list
-    
