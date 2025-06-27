@@ -19,7 +19,7 @@ def validation_errors_to_error_messages(validation_errors):
 
 
 @auth_routes.route('/csrf-token')
-def csrf_token():
+def get_csrf_token():
     print("✅ CSRF token route hit")
     return {'csrf_token': generate_csrf()}
     
