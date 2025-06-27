@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Modal } from "../../context/Modal";
-import CreateExpense from "./CreateExpense"; // this should be the actual form component
+import CreateExpenseModal from "./CreateExpenseModel"; 
 
 export default function CreateExpenseModal({ expense, setHasSubmitted }) {
   const [showModal, setShowModal] = useState(false);
