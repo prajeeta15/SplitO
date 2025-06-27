@@ -30,10 +30,15 @@ Migrate(app, db)
 # CORS 
 CORS(app, origins=[
     "http://localhost:3000",                            # local React dev
-    "https://splito.onrender.com",              
-    "https://split-o.vercel.app",                
+    "https://splito.onrender.com"                
 ], supports_credentials=True)
 
+def allow_vercel_origin(origin):
+    return origin and (
+        origin.startswith("https://split-") and origin.endswith(".vercel.app")
+    )
+
+CORS(app, origins=allow_vercel_origin, supports_credentials=True)
 # Login manager setup
 login = LoginManager(app)
 login.login_view = 'auth.unauthorized'
@@ -60,7 +65,9 @@ def https_redirect():
         if request.headers.get("X-Forwarded-Proto") == "http":
             url = request.url.replace("http://", "https://", 1)
             return redirect(url, code=301)
-
+def log_origin():
+    print("Origin:", request.headers.get("Origin"))
+    
 # Set CSRF token cookie on every response
 @app.after_request
 def inject_csrf_token(response):
