@@ -4,9 +4,13 @@ import { NavLink } from 'react-router-dom';
 import LogoutButton from './auth/LogoutButton';
 import './NavBar.css';
 import userImg from '../assets/user.png';
+import CreateExpenseModal from '../CreateExpenseModal'; // adjust if path differs
 
 const NavBar = () => {
   const [showMenu, setShowMenu] = useState(false);
+  const [showCreateExpense, setShowCreateExpense] = useState(false);
+  const [showSplitExpense, setShowSplitExpense] = useState(false);
+
   const user = useSelector(state => state.session.user);
 
   const toggleMenu = () => setShowMenu(prev => !prev);
@@ -29,17 +33,27 @@ const NavBar = () => {
         <span>SplitO</span>
       </NavLink>
 
-      {/* These links are shown for all users (temporary for testing) */}
-      <div className="navbar-links">
-        <NavLink to="/create-expense" className="nav-link">Create Expense</NavLink>
-        <NavLink to="/split-expense" className="nav-link">Split Expense</NavLink>
+      <div className="navbar-buttons">
+        <button onClick={() => setShowCreateExpense(true)} className="nav-link">
+          Create Expense
+        </button>
+        <button onClick={() => setShowSplitExpense(true)} className="nav-link">
+          Split Expense
+        </button>
       </div>
+
+      {showCreateExpense && (
+        <CreateExpenseModal onClose={() => setShowCreateExpense(false)} />
+      )}
+
+      {/* You can use CreateExpenseModal again for split if applicable */}
+      {showSplitExpense && (
+        <CreateExpenseModal onClose={() => setShowSplitExpense(false)} />
+      )}
 
       {!user ? (
         <div className="navbar-right">
-          <NavLink to="/login" className="nav-link">
-            Log In
-          </NavLink>
+          <NavLink to="/login" className="nav-link">Log In</NavLink>
           <NavLink to="/sign-up">
             <button className="nav-button">Sign Up</button>
           </NavLink>
