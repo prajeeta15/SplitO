@@ -88,26 +88,34 @@ export const editOneExpense = (info, expenseId) => async (dispatch) => {
 }
 
 
-export const createExpense = (info) => async (dispatch) => {
-    const response = await fetch('/api/expenses', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(info)
-    })
+export const createExpense = (expenseData) => async (dispatch) => {
+  try {
+    const res = await fetch(`/api/expenses`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify(expenseData),
+    });
 
-    if(response.ok){
-        const newExpense = await response.json()
-        dispatch(postExpense(newExpense))
-        return newExpense
+    let data;
+    try {
+      data = await res.json();
+    } catch (err) {
+      data = null;
     }
-    else{
-        const data = await response.json()
-        // console.log(data, 'dataaaaaaaaaaaaaaaaa')
-        if(data.errors){
-            return data
-        }
+
+    if (!res.ok) {
+      return { errors: data?.errors || ['An unexpected error occurred.'] };
     }
-}
+
+    return data;
+  } catch (err) {
+    return { errors: ['Network error. Please try again.'] };
+  }
+};
+
 
 export const createGroupExpense = (info) => async (dispatch) => {
     let { group_id } = info
