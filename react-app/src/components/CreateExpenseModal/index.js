@@ -1,2 +1,2 @@
-import CreateExpenseModal from './CreateExpenseModal';
+import CreateExpenseModal from './CreateExpense';
 export default CreateExpenseModal;
