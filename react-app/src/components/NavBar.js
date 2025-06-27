@@ -26,22 +26,38 @@ const NavBar = () => {
   return (
     <nav className="navbar">
       <NavLink to={user ? '/dashboard' : '/'} className="navbar-logo">
-        <img
-          src="https://s3.amazonaws.com/itunes-images/app-assets/458023433/80793600/458023433-80793600-circularArtwork-300.jpg"
-          alt="logo"
-          className="navbar-logo-img"
-        />
-        <span>SplitO</span>
-      </NavLink>
+  <img src="..." alt="logo" className="navbar-logo-img" />
+  <span>SplitO</span>
+</NavLink>
 
-      <div className="navbar-buttons">
-        <button onClick={() => setShowCreateExpense(true)} className="nav-button">
-          Create Expense
-        </button>
-        <button onClick={() => setShowSplitExpense(true)} className="nav-button">
-          Split Expense
-        </button>
-      </div>
+<div className="navbar-buttons">
+  <button onClick={() => setShowCreateExpense(true)} className="nav-link">Create Expense</button>
+  <button onClick={() => setShowSplitExpense(true)} className="nav-link">Split Expense</button>
+</div>
+
+{!user ? (
+  <div className="navbar-right">
+    <NavLink to="/login" className="nav-link">Log In</NavLink>
+    <NavLink to="/sign-up"><button className="nav-button">Sign Up</button></NavLink>
+  </div>
+) : (
+  <div className="navbar-user">
+    <button className="user-menu-button" onClick={toggleMenu}>
+      <img src={userImg} alt="user" className="user-img" />
+      <span>{user.firstName}</span>
+      <i className="fa-solid fa-caret-down" />
+    </button>
+    {showMenu && (
+      <ul className="dropdown-menu">
+        <li><NavLink to="/dashboard">Dashboard</NavLink></li>
+        <li>Username: {user.username}</li>
+        <li>Email: {user.email}</li>
+        <li><LogoutButton /></li>
+      </ul>
+    )}
+  </div>
+)}
+
 
       {/* Expense Modal */}
       {showCreateExpense && (
