@@ -1,4 +1,5 @@
 import os
+import re
 from flask import Flask, request, redirect
 from flask_cors import CORS
 from flask_migrate import Migrate
@@ -29,8 +30,9 @@ Migrate(app, db)
 
 # CORS 
 CORS(app, origins=[
-    "http://localhost:3000",                            # local React dev
-    "https://splito.onrender.com"                
+    "http://localhost:3000",
+    "https://splito.onrender.com",
+    re.compile(r"^https:\/\/split-[a-zA-Z0-9\-]+\.vercel\.app$"),
 ], supports_credentials=True)
 
 def allow_vercel_origin(origin):
