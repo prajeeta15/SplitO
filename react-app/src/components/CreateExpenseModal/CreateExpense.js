@@ -37,11 +37,9 @@ export default function CreateExpenseModal({ setShowModal, expense, setHasSubmit
     const updatedExpense = await dispatch(createExpense(info));
 
     if (updatedExpense.errors) {
-      setErrors(updatedExpense.errors);
+      await setErrors(updatedExpense.errors);
     } else {
       setSuccessMessage('✅ Expense created and mail sent!');
-      dispatch(getAllExpenses());
-
       setTimeout(() => {
         setSuccessMessage('');
         setShowModal(false);
