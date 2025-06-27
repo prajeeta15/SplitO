@@ -29,6 +29,12 @@ const NavBar = () => {
         <span>SplitO</span>
       </NavLink>
 
+      {/* These links are shown for all users (temporary for testing) */}
+      <div className="navbar-links">
+        <NavLink to="/create-expense" className="nav-link">Create Expense</NavLink>
+        <NavLink to="/split-expense" className="nav-link">Split Expense</NavLink>
+      </div>
+
       {!user ? (
         <div className="navbar-right">
           <NavLink to="/login" className="nav-link">
