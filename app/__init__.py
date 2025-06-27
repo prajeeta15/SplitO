@@ -99,6 +99,6 @@ def api_help():
     }
     return route_list
     
-@app.route("/health")
-def health():
-    return {"status": "ok"}, 200
+@app.route('/')
+def root():
+    return {"msg": "Backend is running 🎉"}, 200
