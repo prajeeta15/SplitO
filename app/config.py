@@ -25,3 +25,5 @@ class ProductionConfig(Config):
     FLASK_ENV = 'production'
     DEBUG = False
     SQLALCHEMY_ECHO = False
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_SAMESITE = "None"
