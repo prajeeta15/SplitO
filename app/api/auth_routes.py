@@ -18,7 +18,11 @@ def validation_errors_to_error_messages(validation_errors):
     return error_messages
 
 
-@auth_routes.route('/')
+@auth_routes.route('/csrf-token')
+def csrf_token():
+    print("✅ CSRF token route hit")
+    return {'csrf_token': generate_csrf()}
+    
 def authenticate():
     """
     If user is authenticated, return user dict, else error.
