@@ -6,6 +6,7 @@ import background from '../../assets/background.png';
 import footer from '../../assets/footer.png';
 import './auth.css';
 import NavBar from '../NavBar';
+import { BASE_URL } from '../../api';
 
 const SignUpForm = () => {
   const [errors, setErrors] = useState([]);
