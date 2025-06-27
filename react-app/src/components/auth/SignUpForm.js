@@ -7,6 +7,11 @@ import footer from '../../assets/footer.png';
 import './auth.css';
 import NavBar from '../NavBar';
 
+const BASE_URL =
+  process.env.NODE_ENV === 'production'
+    ? 'https://splito.onrender.com'
+    : 'http://localhost:8000';
+
 const SignUpForm = () => {
   const [errors, setErrors] = useState([]);
   const [username, setUsername] = useState('');
@@ -21,12 +26,12 @@ const SignUpForm = () => {
   const user = useSelector(state => state.session.user);
   const dispatch = useDispatch();
 
-  // ✅ FIXED: useEffect must be declared at component top-level
-  useEffect(() => {
-    fetch(`/api/auth/csrf-token`, {
-      credentials: 'include',
-    });
-  }, []);
+useEffect(() => {
+  fetch(`${BASE_URL}/api/auth/csrf-token`, {
+    credentials: 'include',
+  });
+}, []);
+
 
   const onSignUp = async (e) => {
     e.preventDefault();
