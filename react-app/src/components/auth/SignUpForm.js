@@ -8,6 +8,11 @@ import './auth.css';
 import NavBar from '../NavBar';
 import { BASE_URL } from '../../api';
 
+function getCSRFToken() {
+  const match = document.cookie.match(/csrf_token=([^;]+)/);
+  return match ? match[1] : null;
+}
+
 const SignUpForm = () => {
   const [errors, setErrors] = useState([]);
   const [username, setUsername] = useState('');
@@ -46,7 +51,8 @@ const SignUpForm = () => {
       setLoading(false);
       return;
     }
-
+    
+    await fetch(`${BASE_URL}/api/auth/csrf-token`, { credentials: 'include' });
     const data = await dispatch(
       signUp(username, email, password, firstName, lastName, nickname)
     );
