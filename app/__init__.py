@@ -43,11 +43,12 @@ def allow_vercel_origin(origin):
 CORS(app, origins=allow_vercel_origin, supports_credentials=True)
 # Login manager setup
 login = LoginManager(app)
+login.init_app(app)
 login.login_view = 'auth.unauthorized'
 
 @login.user_loader
-def load_user(id):
-    return User.query.get(int(id))
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 # CLI seed commands
 app.cli.add_command(seed_commands)
