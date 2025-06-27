@@ -1,24 +1,2 @@
-import React, { useState } from "react";
-import { Modal } from "../../context/Modal";
-import CreateExpenseModal from "./CreateExpenseModel"; 
-
-export default function CreateExpenseModal({ expense, setHasSubmitted }) {
-  const [showModal, setShowModal] = useState(false);
-
-  return (
-    <>
-      <button onClick={() => setShowModal(true)} className="individual-charge-button">
-        Add Individual Expense
-      </button>
-      {showModal && (
-        <Modal onClose={() => setShowModal(false)}>
-          <CreateExpense
-            setShowModal={setShowModal}
-            expense={expense}
-            setHasSubmitted={setHasSubmitted}
-          />
-        </Modal>
-      )}
-    </>
-  );
-}
+import CreateExpenseModal from './CreateExpenseModal';
+export default CreateExpenseModal;
