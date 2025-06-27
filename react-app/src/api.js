@@ -1,6 +1,6 @@
 export const BASE_URL =
   process.env.NODE_ENV === "production"
-    ? process.env.REACT_APP_BASE_URL || "https://splito.onrender.com"
+    ? ""  
     : "http://localhost:5000";
 
 const getCSRFToken = async () => {
