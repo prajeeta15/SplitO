@@ -31,7 +31,7 @@ Migrate(app, db)
 CORS(app, origins=[
     "http://localhost:3000",                            # local React dev
     "https://splito.onrender.com",              
-    "https://split-o.vercel.app/",                
+    "https://split-o.vercel.app",                
 ], supports_credentials=True)
 
 # Login manager setup
