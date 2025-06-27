@@ -1,7 +1,6 @@
 import React, { useState } from "react"
 import { Modal } from "../../context/Modal"
-import CreateExpense from "././CreateExpenseModal"
-
+import CreateExpenseModal from './CreateExpenseModal';
 
 
 export default function CreateExpenseModal({expense, setHasSubmitted}){
