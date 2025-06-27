@@ -5,8 +5,6 @@ import { signUp } from '../../store/session';
 import background from '../../assets/background.png';
 import footer from '../../assets/footer.png';
 import './auth.css';
-import NavBar from '../NavBar';        
-import '../NavBar.css';   
 
 const SignUpForm = () => {
   const [errors, setErrors] = useState([]);
@@ -20,6 +18,18 @@ const SignUpForm = () => {
 
   const user = useSelector(state => state.session.user);
   const dispatch = useDispatch();
+const [loading, setLoading] = useState(false);
+
+const onSignUp = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  // validate...
+  const data = await dispatch(...);
+  if (data) {
+    setErrors(data);
+    setLoading(false);
+  }
+};
 
   const onSignUp = async (e) => {
     e.preventDefault();
@@ -83,7 +93,7 @@ const SignUpForm = () => {
               <input type="password" value={repeatPassword} onChange={e => setRepeatPassword(e.target.value)} required />
             </label>
           </div>
-          <button type="submit" className="auth-submit-btn">Sign Up</button>
+          <button type="submit" className="auth-submit-btn" disabled={loading}>{loading ? "Signing Up..." : "Sign Up"}</button>
         </form>
         </div>
       </div>
