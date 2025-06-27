@@ -3,9 +3,10 @@ const REMOVE_USER = 'session/REMOVE_USER';
 
 const BASE_URL =
   process.env.NODE_ENV === 'production'
-    ? process.env.REACT_APP_BASE_URL
-    : 'http://localhost:5000';
+    ? 'https://splito.onrender.com'
+    : 'http://localhost:8000'; // Flask dev server
 
+// Action Creators
 const setUser = (user) => ({
   type: SET_USER,
   payload: user,
@@ -15,95 +16,100 @@ const removeUser = () => ({
   type: REMOVE_USER,
 });
 
-const initialState = { user: null };
-
-const fetchCSRF = async () => {
-  await fetch(`${BASE_URL}/api/auth/csrf-token`, {
-    credentials: 'include',
-  });
-};
-
+// Thunks
 export const authenticate = () => async (dispatch) => {
-  await fetchCSRF(); // fetch token first
-  const response = await fetch(`${BASE_URL}/api/auth/`, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    credentials: 'include',
-  });
+  try {
+    const response = await fetch(`${BASE_URL}/api/auth/`, {
+      credentials: 'include',
+    });
 
-  if (response.ok) {
-    const data = await response.json();
-    if (!data.errors) dispatch(setUser(data));
+    if (response.ok) {
+      const data = await response.json();
+      if (!data.errors) dispatch(setUser(data));
+    }
+  } catch (err) {
+    console.error('Auth error:', err);
   }
 };
 
 export const login = (email, password) => async (dispatch) => {
-  await fetchCSRF(); // fetch token first
-  const response = await fetch(`${BASE_URL}/api/auth/login`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    credentials: 'include',
-    body: JSON.stringify({ email, password }),
-  });
+  try {
+    await fetch(`${BASE_URL}/api/auth/csrf-token`, { credentials: 'include' });
 
-  if (response.ok) {
-    const data = await response.json();
-    dispatch(setUser(data));
-    return null;
-  } else if (response.status < 500) {
-    const data = await response.json();
-    if (data.errors) return data.errors;
-  } else {
-    return ['An error occurred. Please try again.'];
+    const response = await fetch(`${BASE_URL}/api/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      dispatch(setUser(data));
+      return null;
+    } else if (response.status < 500) {
+      const data = await response.json();
+      return data.errors || ['Login failed'];
+    } else {
+      return ['An error occurred. Please try again.'];
+    }
+  } catch (err) {
+    return ['Network error. Please try again.'];
   }
 };
 
 export const logout = () => async (dispatch) => {
-  await fetchCSRF(); // optional, good for consistency
-  const response = await fetch(`${BASE_URL}/api/auth/logout`, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    credentials: 'include',
-  });
+  try {
+    const response = await fetch(`${BASE_URL}/api/auth/logout`, {
+      method: 'POST',
+      credentials: 'include',
+    });
 
-  if (response.ok) {
-    dispatch(removeUser());
+    if (response.ok) dispatch(removeUser());
+  } catch (err) {
+    console.error('Logout error:', err);
   }
 };
 
 export const signUp = (username, email, password, firstName, lastName, nickname) => async (dispatch) => {
-  await fetchCSRF(); 
-  const response = await fetch(`${BASE_URL}/api/auth/signup`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    credentials: 'include',
-    body: JSON.stringify({
-      username,
-      email,
-      password,
-      firstName,
-      lastName,
-      nickname,
-    }),
-  });
+  try {
+    await fetch(`${BASE_URL}/api/auth/csrf-token`, { credentials: 'include' });
 
-  if (response.ok) {
-    const data = await response.json();
-    dispatch(setUser(data));
-    return null;
-  } else if (response.status < 500) {
-    const data = await response.json();
-    if (data.errors) return data.errors;
-  } else {
-    return ['An error occurred. Please try again.'];
+    const response = await fetch(`${BASE_URL}/api/auth/signup`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify({
+        username,
+        email,
+        password,
+        firstName,
+        lastName,
+        nickname,
+      }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      dispatch(setUser(data));
+      return null;
+    } else if (response.status < 500) {
+      const data = await response.json();
+      return data.errors || ['Signup failed'];
+    } else {
+      return ['An error occurred. Please try again.'];
+    }
+  } catch (err) {
+    return ['Network error. Please try again.'];
   }
 };
+
+// Reducer
+const initialState = { user: null };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
