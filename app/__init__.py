@@ -28,21 +28,15 @@ else:
 db.init_app(app)
 Migrate(app, db)
 
-# CORS 
+# ✅ CORRECT CORS CONFIG — Only ONE call
 CORS(app, origins=[
     "http://localhost:3000",
     "https://splito.onrender.com",
-    re.compile(r"^https:\/\/split-[a-zA-Z0-9\-]+\.vercel\.app$"),
+    re.compile(r"^https:\/\/split-[a-zA-Z0-9\-]+\.vercel\.app$")
 ], supports_credentials=True)
 
-def allow_vercel_origin(origin):
-    return origin and (
-        origin.startswith("https://split-") and origin.endswith(".vercel.app")
-    )
-
-CORS(app, origins=allow_vercel_origin, supports_credentials=True)
 # Login manager setup
-login = LoginManager(app)
+login = LoginManager()
 login.init_app(app)
 login.login_view = 'auth.unauthorized'
 
@@ -68,10 +62,8 @@ def https_redirect():
         if request.headers.get("X-Forwarded-Proto") == "http":
             url = request.url.replace("http://", "https://", 1)
             return redirect(url, code=301)
-def log_origin():
-    print("Origin:", request.headers.get("Origin"))
-    
-# Set CSRF token cookie on every response
+
+# CSRF token in cookie
 @app.after_request
 def inject_csrf_token(response):
     response.set_cookie(
@@ -83,11 +75,9 @@ def inject_csrf_token(response):
     )
     return response
 
+# Optional API docs route
 @app.route("/api/docs")
 def api_help():
-    """
-    Returns all API routes and their doc strings
-    """
     acceptable_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
     route_list = {
         rule.rule: [
@@ -98,7 +88,8 @@ def api_help():
         if rule.endpoint != 'static'
     }
     return route_list
-    
+
+# ✅ Debug root route
 @app.route('/')
 def root():
     return {"msg": "Backend is running 🎉"}, 200
