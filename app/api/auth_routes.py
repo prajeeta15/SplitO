@@ -26,14 +26,17 @@ def get_csrf_token():
     return jsonify({'csrf_token': generate_csrf()})
 
 
-@auth_routes.route('/', methods=['GET'])
+@auth_routes.route('/')
 def authenticate():
-    """
-    If user is authenticated, return user dict, else error.
-    """
-    if current_user.is_authenticated:
-        return current_user.to_dict()
-    return {'errors': ['Unauthorized']}, 401
+    try:
+        if current_user.is_authenticated:
+            user = current_user.to_dict()
+            return user
+        else:
+            return {'errors': ['Unauthorized']}, 401
+    except Exception as e:
+        print("🔥 Error in authenticate:", str(e))
+        return {'errors': ['Internal server error']}, 500
 
 
 @auth_routes.route('/login', methods=['POST'])
