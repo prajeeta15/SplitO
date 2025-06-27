@@ -94,11 +94,11 @@ const SignUpForm = () => {
               </label>
               <label>
                 Password
-                <input type="password" value={password} onChange={e => setPassword(e.target.value)} required />
+                <input type="password" value={password} onChange={e => setPassword(e.target.value)} required autoComplete="new-password" />
               </label>
               <label>
                 Repeat Password
-                <input type="password" value={repeatPassword} onChange={e => setRepeatPassword(e.target.value)} required />
+                <input type="password" value={repeatPassword} onChange={e => setRepeatPassword(e.target.value)} required autoComplete="new-password" />
               </label>
             </div>
             <button type="submit" className="auth-submit-btn" disabled={loading}>
