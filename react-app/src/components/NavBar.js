@@ -4,7 +4,8 @@ import { NavLink } from 'react-router-dom';
 import LogoutButton from './auth/LogoutButton';
 import './NavBar.css';
 import userImg from '../assets/user.png';
-import CreateExpenseModal from './CreateExpenseModal'; // adjust if path differs
+import { Modal } from '../context/Modal';
+import CreateExpense from './CreateExpenseModal/CreateExpense'; // adjust if your path differs
 
 const NavBar = () => {
   const [showMenu, setShowMenu] = useState(false);
@@ -34,21 +35,34 @@ const NavBar = () => {
       </NavLink>
 
       <div className="navbar-buttons">
-        <button onClick={() => setShowCreateExpense(true)} className="nav-link">
+        <button onClick={() => setShowCreateExpense(true)} className="nav-button">
           Create Expense
         </button>
-        <button onClick={() => setShowSplitExpense(true)} className="nav-link">
+        <button onClick={() => setShowSplitExpense(true)} className="nav-button">
           Split Expense
         </button>
       </div>
 
+      {/* Expense Modal */}
       {showCreateExpense && (
-        <CreateExpenseModal onClose={() => setShowCreateExpense(false)} />
+        <Modal onClose={() => setShowCreateExpense(false)}>
+          <CreateExpense
+            setShowModal={setShowCreateExpense}
+            expense={null}
+            setHasSubmitted={() => {}}
+          />
+        </Modal>
       )}
 
-      {/* You can use CreateExpenseModal again for split if applicable */}
+      {/* For now, we use the same modal as a placeholder for Split */}
       {showSplitExpense && (
-        <CreateExpenseModal onClose={() => setShowSplitExpense(false)} />
+        <Modal onClose={() => setShowSplitExpense(false)}>
+          <CreateExpense
+            setShowModal={setShowSplitExpense}
+            expense={null}
+            setHasSubmitted={() => {}}
+          />
+        </Modal>
       )}
 
       {!user ? (
@@ -62,7 +76,7 @@ const NavBar = () => {
         <div className="navbar-user">
           <button className="user-menu-button" onClick={toggleMenu}>
             <img src={userImg} alt="user" className="user-img" />
-            <span>{user.firstName}</span>
+            <span>{user.firstName || 'User'}</span>
             <i className="fa-solid fa-caret-down" />
           </button>
           {showMenu && (
