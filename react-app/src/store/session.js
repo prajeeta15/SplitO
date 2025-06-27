@@ -26,7 +26,7 @@ const removeUser = () => ({
 // Thunks
 export const authenticate = () => async (dispatch) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/auth/`, {
+    const response = await fetch(`${BASE_URL}/api/auth/csrf-token`, {
       credentials: 'include',
     });
 
