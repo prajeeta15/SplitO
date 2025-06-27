@@ -7,37 +7,32 @@ import footer from '../../assets/footer.png';
 import './auth.css';
 import NavBar from '../NavBar';
 
-const BASE_URL =
-  process.env.NODE_ENV === 'production'
-    ? 'https://splito.onrender.com'
-    : 'http://localhost:8000';
-
 const SignUpForm = () => {
   const [errors, setErrors] = useState([]);
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
-  const [first_name, setFirstName] = useState('');
-  const [last_name, setLastName] = useState('');
+  const [firstName, setFirstName] = useState('');  // ✅ use camelCase to match session.js
+  const [lastName, setLastName] = useState('');
   const [nickname, setNickname] = useState('');
   const [loading, setLoading] = useState(false);
 
   const user = useSelector(state => state.session.user);
   const dispatch = useDispatch();
 
-useEffect(() => {
-  fetch(`${BASE_URL}/api/auth/csrf-token`, {
-    credentials: 'include',
-  });
-}, []);
-
+  // ✅ CSRF fetch - not required here if already done in session.js, but harmless
+  useEffect(() => {
+    fetch('/api/auth/csrf-token', {
+      credentials: 'include',
+    });
+  }, []);
 
   const onSignUp = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const errorsArr = [];
 
+    const errorsArr = [];
     if (firstName.length > 49) errorsArr.push("First Name must be less than 50 characters");
     if (lastName.length > 49) errorsArr.push("Last Name must be less than 50 characters");
     if (username.length > 39) errorsArr.push("Username must be less than 40 characters");
@@ -52,19 +47,22 @@ useEffect(() => {
       return;
     }
 
-    const data = await dispatch(signUp(username, email, password, firstName, lastName, nickname));
+    const data = await dispatch(
+      signUp(username, email, password, firstName, lastName, nickname)
+    );
+
     if (data) {
       setErrors(data);
-      setLoading(false);
     }
+    setLoading(false);
   };
 
-  if (user) return <Redirect to='/dashboard' />;
+  if (user) return <Redirect to="/dashboard" />;
 
   return (
     <div>
       <NavBar />
-      <div id='signup-form-container'>
+      <div id="signup-form-container">
         <div className="auth-background" style={{ backgroundImage: `url(${background})` }}>
           <form className="auth-form" onSubmit={onSignUp}>
             <h2>Create Your Account</h2>
@@ -104,7 +102,7 @@ useEffect(() => {
               </label>
             </div>
             <button type="submit" className="auth-submit-btn" disabled={loading}>
-              {loading ? "Signing Up..." : "Sign Up"}
+              {loading ? 'Signing Up...' : 'Sign Up'}
             </button>
           </form>
         </div>
