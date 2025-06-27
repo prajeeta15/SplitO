@@ -3,6 +3,8 @@ function getCSRFToken() {
   return match ? match[1] : null;
 }
 
+const csrfToken = getCSRFToken();
+
 const SET_USER = 'session/SET_USER';
 const REMOVE_USER = 'session/REMOVE_USER';
 
