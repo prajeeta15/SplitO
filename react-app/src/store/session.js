@@ -45,7 +45,7 @@ export const login = (email, password) => async (dispatch) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRFToken': CSRFToken(),
+        'X-CSRFToken': csrfToken(),
       },
       credentials: 'include',
       body: JSON.stringify({ email, password }),
@@ -87,7 +87,7 @@ export const signUp = (username, email, password, firstName, lastName, nickname)
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRFToken': CSRFToken(),
+        'X-CSRFToken': csrfToken(),
       },
       credentials: 'include',
       body: JSON.stringify({
