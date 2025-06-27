@@ -18,11 +18,15 @@ def validation_errors_to_error_messages(validation_errors):
     return error_messages
 
 
-@auth_routes.route('/csrf-token')
+@auth_routes.route('/csrf-token', methods=['GET'])
 def get_csrf_token():
-    print("✅ CSRF token route hit")
-    return {'csrf_token': generate_csrf()}
-    
+    """
+    Provides a CSRF token for the frontend.
+    """
+    return jsonify({'csrf_token': generate_csrf()})
+
+
+@auth_routes.route('/', methods=['GET'])
 def authenticate():
     """
     If user is authenticated, return user dict, else error.
@@ -82,17 +86,9 @@ def sign_up():
     return {'errors': validation_errors_to_error_messages(form.errors)}, 400
 
 
-@auth_routes.route('/unauthorized')
+@auth_routes.route('/unauthorized', methods=['GET'])
 def unauthorized():
     """
     Returns unauthorized JSON if login required.
     """
     return {'errors': ['Unauthorized']}, 401
-
-
-@auth_routes.route('/csrf-token', methods=['GET'])
-def csrf_token():
-    """
-    Provides a CSRF token for the frontend.
-    """
-    return jsonify({'csrf_token': generate_csrf()})
