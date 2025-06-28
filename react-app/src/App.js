@@ -28,10 +28,12 @@ function App() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    // Ensure user session is restored BEFORE rendering anything
-    dispatch(authenticate()).then(() => setIsLoaded(true));
-  }, [dispatch]);
-
+  (async () => {
+    await dispatch(authenticate());
+    setLoaded(true);
+  })();
+}, [dispatch]);
+  
   if (!isLoaded) return null; // prevents render flickering before auth
 
   return (
