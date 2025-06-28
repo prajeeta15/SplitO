@@ -7,6 +7,7 @@ from app.forms import LoginForm, SignUpForm
 
 auth_routes = Blueprint('auth', __name__)
 
+
 def validation_errors_to_error_messages(validation_errors):
     error_messages = []
     for field in validation_errors:
