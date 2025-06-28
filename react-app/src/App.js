@@ -25,7 +25,7 @@ import Template from './components/Template/Template';
 
 function App() {
   const dispatch = useDispatch();
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
   (async () => {
