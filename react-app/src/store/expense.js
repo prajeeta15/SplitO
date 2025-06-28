@@ -1,4 +1,4 @@
-
+const API_BASE = process.env.REACT_APP_API_URL || "";
 
 const GET_ALL_EXPENSES = "expenses/GET_ALL_EXPENSES";
 const GET_ONE_EXPENSE = "expenses/GET_ONE_EXPENSE";
@@ -7,94 +7,91 @@ const CREATE_EXPENSE = "expenses/CREATE_ONE_EXPENSE";
 const DELETE_EXPENSE = "expenses/DELETE_ONE_EXPENSE";
 const CREATE_GROUP_EXPENSE = "expenses/CREATE_GROUP_EXPENSE";
 
-
-//action creators
+// Action creators
 const loadAllExpenses = (allExpenses) => ({
-    type: GET_ALL_EXPENSES,
-    allExpenses
-})
+  type: GET_ALL_EXPENSES,
+  allExpenses,
+});
 
 const loadOneExpense = (oneExpense) => ({
-    type: GET_ONE_EXPENSE,
-    oneExpense
-})
+  type: GET_ONE_EXPENSE,
+  oneExpense,
+});
 
 const editExpense = (edited) => ({
-    type: EDIT_ONE_EXPENSE,
-    edited
-})
+  type: EDIT_ONE_EXPENSE,
+  edited,
+});
 
 const postExpense = (newCharge) => ({
-    type: CREATE_EXPENSE,
-    newCharge
-})
+  type: CREATE_EXPENSE,
+  newCharge,
+});
 
 const postGroupExpense = (newGroupCharge) => ({
-    type: CREATE_GROUP_EXPENSE,
-    newGroupCharge
-})
+  type: CREATE_GROUP_EXPENSE,
+  newGroupCharge,
+});
 
 const delExpense = (expenseId) => ({
-    type: DELETE_EXPENSE,
-    expenseId
-})
+  type: DELETE_EXPENSE,
+  expenseId,
+});
 
-const CLEAR_EXPENSES = "expenses/CLEAR_EXPENSES"
+const CLEAR_EXPENSES = "expenses/CLEAR_EXPENSES";
 export const clearExpenses = () => ({
-    type: CLEAR_EXPENSES
-})
+  type: CLEAR_EXPENSES,
+});
 
-
-
-
-//thunks
+// Thunks
 export const getAllExpenses = () => async (dispatch) => {
-    const response = await fetch('/api/expenses/current')
-    if (response.ok) {
-        const res = await response.json()
-        dispatch(loadAllExpenses(res))
-    }
-}
+  try {
+    const response = await fetch(`${API_BASE}/api/expenses/current`, {
+      credentials: 'include',
+    });
+    const res = await response.json();
+    dispatch(loadAllExpenses(res));
+  } catch (err) {
+    console.error("Failed to fetch all expenses:", err);
+  }
+};
 
 export const getOneExpense = (expenseId) => async (dispatch) => {
-    const response = await fetch(`/api/expenses/${expenseId}`)
-    if (response.ok) {
-        const res = await response.json()
-        dispatch(loadOneExpense(res))
-    }
-}
+  try {
+    const response = await fetch(`${API_BASE}/api/expenses/${expenseId}`, {
+      credentials: 'include',
+    });
+    const res = await response.json();
+    dispatch(loadOneExpense(res));
+  } catch (err) {
+    console.error("Failed to fetch expense:", err);
+  }
+};
 
 export const editOneExpense = (info, expenseId) => async (dispatch) => {
-    const response = await fetch(`/api/expenses/${expenseId}`, {
-        method: 'PUT',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(info)
-    })
-    if (response.ok) {
-        const edited = await response.json()
-        dispatch(editExpense(edited))
-        return edited
-    }
-    else {
-        const data = await response.json()
-        if (data.errors){
-            return data
-        }
-        else{
-            return data
-        }
-    }
+  try {
+    const response = await fetch(`${API_BASE}/api/expenses/${expenseId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(info),
+    });
 
-}
+    const data = await response.json();
+    if (!response.ok) return { errors: data.errors || ["Unexpected error"] };
 
+    dispatch(editExpense(data));
+    return data;
+  } catch (err) {
+    return { errors: ['Network error. Please try again.'] };
+  }
+};
 
 export const createExpense = (expenseData) => async (dispatch) => {
   try {
-    const res = await fetch(`/api/expenses`, {
+    const res = await fetch(`${API_BASE}/api/expenses`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
       body: JSON.stringify(expenseData),
     });
@@ -110,129 +107,111 @@ export const createExpense = (expenseData) => async (dispatch) => {
       return { errors: data?.errors || ['An unexpected error occurred.'] };
     }
 
+    dispatch(postExpense(data));
     return data;
   } catch (err) {
     return { errors: ['Network error. Please try again.'] };
   }
 };
 
-
 export const createGroupExpense = (info) => async (dispatch) => {
-    let { group_id } = info
-    const response = await fetch(`/api/groups/${group_id}/expenses`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(info)
-    })
-    if(response.ok){
-        const newExpense = await response.json()
-        dispatch(postGroupExpense(newExpense))
-        return newExpense
-    }
-    else{
-        const data = await response.json()
-        if(data.errors){
-            return data
-        }
-    }
-}
+  try {
+    const { group_id } = info;
+    const response = await fetch(`${API_BASE}/api/groups/${group_id}/expenses`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(info),
+    });
+
+    const data = await response.json();
+    if (!response.ok) return { errors: data.errors || ["Unexpected error"] };
+
+    dispatch(postGroupExpense(data));
+    return data;
+  } catch (err) {
+    return { errors: ['Network error. Please try again.'] };
+  }
+};
 
 export const deleteExpense = (expenseId) => async (dispatch) => {
-    const response = await fetch(`/api/expenses/${expenseId}`, {
-        method: 'DELETE'
-    })
-    if(response.ok){
-        dispatch(delExpense(expenseId))
+  try {
+    const response = await fetch(`${API_BASE}/api/expenses/${expenseId}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+
+    if (response.ok) {
+      dispatch(delExpense(expenseId));
     }
+  } catch (err) {
+    console.error("Failed to delete expense:", err);
+  }
+};
 
-}
-
-
-
-//reducer
-const initialState = {oneExpense: {}, payableExpenses: {}, receivableExpenses: {}}
-
+// Reducer
+const initialState = { oneExpense: {}, payableExpenses: {}, receivableExpenses: {} };
 
 const expensesReducer = (state = initialState, action) => {
-    let newState;
-    switch (action.type) {
-        case GET_ALL_EXPENSES:
-            newState = {
-                ...state,
-                oneExpense: {...state.oneExpense},
-                payableExpenses: {...state.payableExpenses},
-                receivableExpenses: {...state.receivableExpenses}
-            }
-            action.allExpenses["Payable Expenses"].forEach(expense => {
-                newState.payableExpenses[expense.id] = expense
-            })
-            action.allExpenses["Receivable Expenses"].forEach(expense => {
-                newState.receivableExpenses[expense.id] = expense
-            })
-            return newState
-        case GET_ONE_EXPENSE:
-            newState = {
-                ...state,
-                oneExpense: {...state.oneExpense},
-                payableExpenses: {...state.payableExpenses},
-                receivableExpenses: {...state.receivableExpenses}
-            }
-            newState.oneExpense = action.oneExpense
-            return newState
-        case EDIT_ONE_EXPENSE:
-            newState = {
-                ...state,
-                oneExpense: {...state.oneExpense},
-                payableExpenses: {...state.payableExpenses},
-                receivableExpenses: {...state.receivableExpenses}
-            }
-            newState.oneExpense = action.edited
-            return newState
-        case CREATE_EXPENSE:
-            newState = {
-                ...state,
-                oneExpense: {...state.oneExpense},
-                payableExpenses: {...state.payableExpenses},
-                receivableExpenses: {...state.receivableExpenses}
-            }
-            newState.oneExpense = action.newCharge
-            return newState
-        case DELETE_EXPENSE:
-            newState = {
-                ...state,
-                oneExpense: {...state.oneExpense},
-                payableExpenses: {...state.payableExpenses},
-                receivableExpenses: {...state.receivableExpenses}
-            }
-            if (newState.payableExpenses[action.expenseId]){
-                delete newState.payableExpenses[action.expenseId]
-            }
-            else if (newState.receivableExpenses[action.expenseId]){
-                delete newState.receivableExpenses[action.expenseId]
-            }
-            return newState
-        case CREATE_GROUP_EXPENSE:
-            newState = {
-                ...state,
-                oneExpense: {...state.oneExpense},
-                payableExpenses: {...state.payableExpenses},
-                receivableExpenses: {...state.receivableExpenses}
-            }
-            return newState
-        case CLEAR_EXPENSES:
-            newState = {
-                ...state,
-                oneExpense: {},
-                payableExpenses: {},
-                receivableExpenses: {}
-            }
-            return newState
-        default:
-            return state
-    }
-}
+  let newState;
+  switch (action.type) {
+    case GET_ALL_EXPENSES:
+      newState = {
+        ...state,
+        oneExpense: {},
+        payableExpenses: {},
+        receivableExpenses: {},
+      };
+      action.allExpenses["Payable Expenses"].forEach((expense) => {
+        newState.payableExpenses[expense.id] = expense;
+      });
+      action.allExpenses["Receivable Expenses"].forEach((expense) => {
+        newState.receivableExpenses[expense.id] = expense;
+      });
+      return newState;
 
+    case GET_ONE_EXPENSE:
+      return {
+        ...state,
+        oneExpense: action.oneExpense,
+      };
 
+    case EDIT_ONE_EXPENSE:
+      return {
+        ...state,
+        oneExpense: action.edited,
+      };
 
+    case CREATE_EXPENSE:
+      return {
+        ...state,
+        oneExpense: action.newCharge,
+      };
+
+    case DELETE_EXPENSE:
+      newState = {
+        ...state,
+        oneExpense: {},
+        payableExpenses: { ...state.payableExpenses },
+        receivableExpenses: { ...state.receivableExpenses },
+      };
+      delete newState.payableExpenses[action.expenseId];
+      delete newState.receivableExpenses[action.expenseId];
+      return newState;
+
+    case CREATE_GROUP_EXPENSE:
+      return { ...state };
+
+    case CLEAR_EXPENSES:
+      return {
+        oneExpense: {},
+        payableExpenses: {},
+        receivableExpenses: {},
+      };
+
+    default:
+      return state;
+  }
+};
 
 export default expensesReducer;
