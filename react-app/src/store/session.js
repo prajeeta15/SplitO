@@ -40,7 +40,11 @@ export const authenticate = () => async (dispatch) => {
 
     if (res.ok) {
       const data = await res.json();
-      dispatch(setUser(data));
+      if (!data.errors) {
+        dispatch(setUser(data));
+      } else {
+        dispatch(removeUser());
+      }
     } else {
       dispatch(removeUser());
     }
@@ -113,17 +117,17 @@ export const signUp = (username, email, password, firstName, lastName, nickname)
       }),
     });
 
-    if (response.ok) {
-      const data = await response.json();
-      dispatch(setUser(data));
-      return null;
-    } else {
-      const data = await response.json();
-      return data.errors || ['Signup failed.'];
-    }
-  } catch (err) {
-    return ['Network error. Please try again.'];
+ if (response.ok) {
+  const data = await response.json();
+  if (!data.errors) {
+    dispatch(setUser(data));
+  } else {
+    dispatch(removeUser());
   }
+} else {
+  dispatch(removeUser());
+}
+
 };
 
 // Reducer
