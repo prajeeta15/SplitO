@@ -28,16 +28,25 @@ function getCSRFToken() {
 
 export const authenticate = () => async (dispatch) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/auth/`, {
-      credentials: 'include',
+    // Step 1: get CSRF token
+    await fetch(`${BASE_URL}/api/auth/csrf-token`, {
+      credentials: 'include'
     });
 
-    if (response.ok) {
-      const data = await response.json();
+    // Step 2: fetch user
+    const res = await fetch(`${BASE_URL}/api/auth/`, {
+      credentials: 'include'
+    });
+
+    if (res.ok) {
+      const data = await res.json();
       dispatch(setUser(data));
+    } else {
+      dispatch(removeUser());
     }
   } catch (err) {
-    console.error('Error in authenticate:', err);
+    console.error('Auth error:', err);
+    dispatch(removeUser());
   }
 };
 
