@@ -93,3 +93,7 @@ def api_help():
 @app.route('/')
 def root():
     return {"msg": "Backend is running 🎉"}, 200
+
+@app.errorhandler(404)
+def not_found(e):
+    return {"error": "Not found"}, 404
