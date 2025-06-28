@@ -1,159 +1,90 @@
 .outer-container {
-    width: 100%;
-    min-height: 100vh;
-    padding: 20px;
-    box-sizing: border-box;
-    background-color: #f9f9f9;
+  display: flex;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.left-side {
+  width: 250px;
+  background-color: #f2f2f2;
+  padding: 10px;
+}
+
+.middle-side {
+  flex-grow: 1;
+  background-color: #fff;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.right-side {
+  width: 100px;
+  background-color: #f2f2f2;
 }
 
 .dashboard-top-expenses {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 5%;
-    flex-wrap: wrap;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .dashboard-values-total-expenses-container {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 15px 0;
-    border-top: 1px solid lightgray;
-    flex-wrap: wrap;
-    gap: 20px;
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 0;
 }
 
 .dashboard-values-container {
-    font-size: 16px;
-    padding: 10px 20px;
-    text-align: center;
+  background: #e9f7ef;
+  border-radius: 10px;
+  padding: 15px;
+  width: 150px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .dashboard-values-labels {
-    color: gray;
-    font-size: small;
-    margin-top: 5px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 5px;
 }
 
-#dashboard-values-owed {
-    color: #ff652f;
-    font-weight: 600;
+.dashboard-values-container div {
+  font-size: 1.2rem;
 }
 
-#dashboard-values-owe {
-    color: #318970;
-    font-weight: 600;
+.content {
+  margin-top: 20px;
 }
 
 .dashboard-content-total-container {
-    display: flex;
-    justify-content: space-between;
-    gap: 30px;
-    padding: 20px 5%;
-    flex-wrap: wrap;
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
 }
 
-.you-owe-column-container,
-.you-are-owed-column-container {
-    width: 100%;
-    max-width: 48%;
-    padding: 15px;
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-sizing: border-box;
-    min-height: 200px;
-}
-
-.you-owe-column-container {
-    border-right: none;
-}
-
-.you-are-owed-column-container {
-    margin-top: 20px;
-}
-
-.you-owe-are-owed-label {
-    color: #555;
-    font-weight: bold;
-    font-size: 16px;
-    margin-bottom: 10px;
-}
-
-.dashboard-expense-name {
-    font-weight: 600;
-    font-size: 18px;
-    margin-bottom: 8px;
-}
-
-.net-amounts-disclaimer {
-    font-size: 13px;
-    letter-spacing: -0.3px;
-    padding: 10px 0;
-    color: #666;
-}
-
-.dashboard-you-owe-text {
-    color: #ff652f;
-    font-size: 14px;
-}
-
-.dashboard-you-are-owed-text {
-    color: #318970;
-    font-size: 14px;
+.you-owe-column-container, .you-are-owed-column-container {
+  flex: 1;
 }
 
 .dashboard-each-user-container {
-    display: flex;
-    align-items: center;
-    margin: 8px 0;
-    gap: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  gap: 10px;
 }
 
-.fa-user {
-    font-size: 20px;
-    background-color: #eee;
-    border-radius: 50%;
-    padding: 8px;
-    color: #444;
+.dashboard-expense-name {
+  font-weight: bold;
+}
+
+.dashboard-you-owe-text, .dashboard-you-are-owed-text {
+  color: #ff4d4d;
+  margin-bottom: 5px;
 }
 
 .dashboard-list-item {
-    font-size: 13px;
-    color: gray;
-    list-style-type: circle;
-    margin-left: 20px;
-}
-
-.dashboard-link {
-    text-decoration: none;
-    color: #444;
-}
-
-.dashboard-link:hover {
-    text-decoration: underline;
-}
-
-.individual-charge-button {
-    font-size: 14px;
-    padding: 10px 16px;
-    margin: 20px;
-    background-color: #5cc5a7;
-    border: none;
-    border-radius: 6px;
-    color: white;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.individual-charge-button:hover {
-    background-color: #4aa88f;
-    transform: translateY(-2px);
-}
-
-.dashboard {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  font-size: 0.9rem;
 }
