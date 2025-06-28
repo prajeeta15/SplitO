@@ -1,9 +1,4 @@
-function getCSRFToken() {
-  const match = document.cookie.match(/csrf_token=([^;]+)/);
-  return match ? match[1] : null;
-}
-
-const csrfToken = getCSRFToken();
+// src/store/session.js
 
 const SET_USER = 'session/SET_USER';
 const REMOVE_USER = 'session/REMOVE_USER';
@@ -11,7 +6,7 @@ const REMOVE_USER = 'session/REMOVE_USER';
 const BASE_URL =
   process.env.NODE_ENV === 'production'
     ? 'https://splito.onrender.com'
-    : 'http://localhost:8000'; // Flask dev server
+    : 'http://localhost:8000';
 
 // Action Creators
 const setUser = (user) => ({
@@ -23,19 +18,26 @@ const removeUser = () => ({
   type: REMOVE_USER,
 });
 
+// CSRF Token Helper
+function getCSRFToken() {
+  const match = document.cookie.match(/csrf_token=([^;]+)/);
+  return match ? match[1] : null;
+}
+
 // Thunks
+
 export const authenticate = () => async (dispatch) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/auth/csrf-token`, {
+    const response = await fetch(`${BASE_URL}/api/auth/`, {
       credentials: 'include',
     });
 
     if (response.ok) {
       const data = await response.json();
-      if (!data.errors) dispatch(setUser(data));
+      dispatch(setUser(data));
     }
   } catch (err) {
-    console.error('Auth error:', err);
+    console.error('Error in authenticate:', err);
   }
 };
 
@@ -43,11 +45,12 @@ export const login = (email, password) => async (dispatch) => {
   try {
     await fetch(`${BASE_URL}/api/auth/csrf-token`, { credentials: 'include' });
     const csrfToken = getCSRFToken();
+
     const response = await fetch(`${BASE_URL}/api/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRFToken': csrfToken(),
+        'X-CSRFToken': csrfToken,
       },
       credentials: 'include',
       body: JSON.stringify({ email, password }),
@@ -57,11 +60,9 @@ export const login = (email, password) => async (dispatch) => {
       const data = await response.json();
       dispatch(setUser(data));
       return null;
-    } else if (response.status < 500) {
-      const data = await response.json();
-      return data.errors || ['Login failed'];
     } else {
-      return ['An error occurred. Please try again.'];
+      const data = await response.json();
+      return data.errors || ['Login failed.'];
     }
   } catch (err) {
     return ['Network error. Please try again.'];
@@ -85,11 +86,12 @@ export const signUp = (username, email, password, firstName, lastName, nickname)
   try {
     await fetch(`${BASE_URL}/api/auth/csrf-token`, { credentials: 'include' });
     const csrfToken = getCSRFToken();
+
     const response = await fetch(`${BASE_URL}/api/auth/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRFToken': csrfToken(),
+        'X-CSRFToken': csrfToken,
       },
       credentials: 'include',
       body: JSON.stringify({
@@ -106,11 +108,9 @@ export const signUp = (username, email, password, firstName, lastName, nickname)
       const data = await response.json();
       dispatch(setUser(data));
       return null;
-    } else if (response.status < 500) {
-      const data = await response.json();
-      return data.errors || ['Signup failed'];
     } else {
-      return ['An error occurred. Please try again.'];
+      const data = await response.json();
+      return data.errors || ['Signup failed.'];
     }
   } catch (err) {
     return ['Network error. Please try again.'];
@@ -120,7 +120,7 @@ export const signUp = (username, email, password, firstName, lastName, nickname)
 // Reducer
 const initialState = { user: null };
 
-export default function reducer(state = initialState, action) {
+export default function sessionReducer(state = initialState, action) {
   switch (action.type) {
     case SET_USER:
       return { user: action.payload };
