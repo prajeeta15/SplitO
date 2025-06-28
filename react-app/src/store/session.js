@@ -28,14 +28,12 @@ function getCSRFToken() {
 
 export const authenticate = () => async (dispatch) => {
   try {
-    // Step 1: get CSRF token
     await fetch(`${BASE_URL}/api/auth/csrf-token`, {
-      credentials: 'include'
+      credentials: 'include',
     });
 
-    // Step 2: fetch user
     const res = await fetch(`${BASE_URL}/api/auth/`, {
-      credentials: 'include'
+      credentials: 'include',
     });
 
     if (res.ok) {
@@ -117,17 +115,19 @@ export const signUp = (username, email, password, firstName, lastName, nickname)
       }),
     });
 
- if (response.ok) {
-  const data = await response.json();
-  if (!data.errors) {
-    dispatch(setUser(data));
-  } else {
-    dispatch(removeUser());
+    if (response.ok) {
+      const data = await response.json();
+      if (!data.errors) {
+        dispatch(setUser(data));
+      } else {
+        dispatch(removeUser());
+      }
+    } else {
+      dispatch(removeUser());
+    }
+  } catch (err) {
+    return ['Network error. Please try again.'];
   }
-} else {
-  dispatch(removeUser());
-}
-
 };
 
 // Reducer
