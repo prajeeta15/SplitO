@@ -3,7 +3,10 @@
 const SET_USER = 'session/SET_USER';
 const REMOVE_USER = 'session/REMOVE_USER';
 
-const BASE_URL = process.env.REACT_APP_API_URL || '';
+const BASE_URL =
+  process.env.NODE_ENV === 'production'
+    ? 'https://splito.onrender.com'
+    : 'http://localhost:8000';
 
 // Action Creators
 const setUser = (user) => ({
