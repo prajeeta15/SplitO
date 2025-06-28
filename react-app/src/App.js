@@ -29,12 +29,18 @@ function App() {
 
   useEffect(() => {
   (async () => {
-    await dispatch(authenticate());
-    setLoaded(true);
+    try {
+      const res = await dispatch(authenticate());
+      console.log("Auth result:", res); // Log for debugging
+    } catch (err) {
+      console.error("Auth error:", err);
+    } finally {
+      setLoaded(true); // Always let the app load
+    }
   })();
 }, [dispatch]);
   
-  if (!loaded) return null; // prevents render flickering before auth
+  if (!loaded) return <div> loading...</div> ; // prevents render flickering before auth
 
   return (
     <BrowserRouter>
