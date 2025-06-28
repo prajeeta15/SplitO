@@ -6,7 +6,6 @@ from flask_wtf.csrf import generate_csrf
 
 auth_routes = Blueprint('auth', __name__)
 
-
 def validation_errors_to_error_messages(validation_errors):
     """
     Turns WTForms validation errors into a simple list.
@@ -17,26 +16,27 @@ def validation_errors_to_error_messages(validation_errors):
             error_messages.append(f'{field} : {error}')
     return error_messages
 
-
 @auth_routes.route('/csrf-token', methods=['GET'])
 def get_csrf_token():
     """
     Provides a CSRF token for the frontend.
     """
-    return jsonify({'csrf_token': generate_csrf()})
+    return jsonify({'csrf_token': generate_csrf()}), 200
 
 
 @auth_routes.route('/')
 def authenticate():
+    """
+    Verifies if the user is logged in.
+    """
     try:
         if current_user.is_authenticated:
-            user = current_user.to_dict()
-            return user
+            return jsonify(current_user.to_dict()), 200
         else:
-            return {'errors': ['Unauthorized']}, 401
+            return jsonify({'errors': ['Unauthorized']}), 401
     except Exception as e:
         print("🔥 Error in authenticate:", str(e))
-        return {'errors': ['Internal server error']}, 500
+        return jsonify({'errors': ['Internal server error']}), 500
 
 
 @auth_routes.route('/login', methods=['POST'])
@@ -51,8 +51,9 @@ def login():
         user = User.query.filter_by(email=form.data['email']).first()
         if user:
             login_user(user)
-            return user.to_dict()
-    return {'errors': validation_errors_to_error_messages(form.errors)}, 400
+            return jsonify(user.to_dict()), 200
+
+    return jsonify({'errors': validation_errors_to_error_messages(form.errors)}), 400
 
 
 @auth_routes.route('/logout', methods=['POST'])
@@ -62,7 +63,7 @@ def logout():
     Logs out the current user.
     """
     logout_user()
-    return {'message': 'User logged out successfully'}, 200
+    return jsonify({'message': 'User logged out successfully'}), 200
 
 
 @auth_routes.route('/signup', methods=['POST'])
@@ -85,8 +86,9 @@ def sign_up():
         db.session.add(user)
         db.session.commit()
         login_user(user)
-        return user.to_dict(), 201
-    return {'errors': validation_errors_to_error_messages(form.errors)}, 400
+        return jsonify(user.to_dict()), 201
+
+    return jsonify({'errors': validation_errors_to_error_messages(form.errors)}), 400
 
 
 @auth_routes.route('/unauthorized', methods=['GET'])
@@ -94,4 +96,4 @@ def unauthorized():
     """
     Returns unauthorized JSON if login required.
     """
-    return {'errors': ['Unauthorized']}, 401
+    return jsonify({'errors': ['Unauthorized']}), 401
