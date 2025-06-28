@@ -34,7 +34,7 @@ function App() {
   })();
 }, [dispatch]);
   
-  if (!isLoaded) return null; // prevents render flickering before auth
+  if (!loaded) return null; // prevents render flickering before auth
 
   return (
     <BrowserRouter>
