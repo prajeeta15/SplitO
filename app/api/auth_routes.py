@@ -1,10 +1,12 @@
-from flask import Blueprint, request, jsonify, session
-from app.models import User, db
-from app.forms import LoginForm, SignUpForm
+from flask import Blueprint, request, jsonify
 from flask_login import login_user, logout_user, current_user, login_required
 from flask_wtf.csrf import generate_csrf
 
+from app.models import db, User
+from app.forms import LoginForm, SignUpForm
+
 auth_routes = Blueprint('auth', __name__)
+
 
 def validation_errors_to_error_messages(validation_errors):
     """
@@ -16,42 +18,39 @@ def validation_errors_to_error_messages(validation_errors):
             error_messages.append(f'{field} : {error}')
     return error_messages
 
+
 @auth_routes.route('/csrf-token', methods=['GET'])
 def get_csrf_token():
     """
-    Provides a CSRF token for the frontend.
+    Provides a CSRF token to frontend.
     """
     return jsonify({'csrf_token': generate_csrf()}), 200
 
 
-@auth_routes.route('/')
+@auth_routes.route('/', methods=['GET'])
 def authenticate():
     """
-    Verifies if the user is logged in.
+    Verifies if a user is logged in.
     """
-    try:
-        if current_user.is_authenticated:
-            return jsonify(current_user.to_dict()), 200
-        else:
-            return jsonify({'errors': ['Unauthorized']}), 401
-    except Exception as e:
-        print("🔥 Error in authenticate:", str(e))
-        return jsonify({'errors': ['Internal server error']}), 500
+    if current_user.is_authenticated:
+        return jsonify(current_user.to_dict()), 200
+    return jsonify({'errors': ['Unauthorized']}), 401
 
 
 @auth_routes.route('/login', methods=['POST'])
 def login():
     """
-    Logs in a user.
+    Logs in a user using email & password.
     """
     form = LoginForm()
     form['csrf_token'].data = request.cookies.get('csrf_token')
 
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.data['email']).first()
-        if user:
+        if user and user.check_password(form.data['password']):
             login_user(user)
             return jsonify(user.to_dict()), 200
+        return jsonify({'errors': ['Invalid credentials']}), 401
 
     return jsonify({'errors': validation_errors_to_error_messages(form.errors)}), 400
 
@@ -69,7 +68,7 @@ def logout():
 @auth_routes.route('/signup', methods=['POST'])
 def sign_up():
     """
-    Signs up a new user and logs them in.
+    Registers and logs in a new user.
     """
     form = SignUpForm()
     form['csrf_token'].data = request.cookies.get('csrf_token')
@@ -86,7 +85,7 @@ def sign_up():
         db.session.add(user)
         db.session.commit()
         login_user(user)
-        return jsonify(user.to_dict()), 200
+        return jsonify(user.to_dict()), 201
 
     return jsonify({'errors': validation_errors_to_error_messages(form.errors)}), 400
 
@@ -94,6 +93,6 @@ def sign_up():
 @auth_routes.route('/unauthorized', methods=['GET'])
 def unauthorized():
     """
-    Returns unauthorized JSON if login required.
+    Returns 401 if a protected route is accessed without login.
     """
     return jsonify({'errors': ['Unauthorized']}), 401
