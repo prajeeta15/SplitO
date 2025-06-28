@@ -86,7 +86,7 @@ def sign_up():
         db.session.add(user)
         db.session.commit()
         login_user(user)
-        return jsonify(user.to_dict()), 201
+        return jsonify(user.to_dict()), 200
 
     return jsonify({'errors': validation_errors_to_error_messages(form.errors)}), 400
 
