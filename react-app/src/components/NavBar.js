@@ -5,7 +5,7 @@ import LogoutButton from './auth/LogoutButton';
 import './NavBar.css';
 import userImg from '../assets/user.png';
 import { Modal } from '../context/Modal';
-import CreateExpense from './CreateExpenseModal/CreateExpense'; // adjust if your path differs
+import CreateExpense from './CreateExpenseModal/CreateExpense'; // adjust path if needed
 
 const NavBar = () => {
   const [showMenu, setShowMenu] = useState(false);
@@ -23,18 +23,24 @@ const NavBar = () => {
     return () => document.removeEventListener('click', closeMenu);
   }, [showMenu]);
 
+  // Handle hydration delay
+  if (user === undefined) return null;
+
   return (
     <nav className="navbar">
       <NavLink to={user ? '/dashboard' : '/'} className="navbar-logo">
-  <img src="..." alt="logo" className="navbar-logo-img" />
-  <span>SplitO</span>
-</NavLink>
+        <img src="/logo.png" alt="logo" className="navbar-logo-img" />
+        <span>SplitO</span>
+      </NavLink>
 
-<div className="navbar-buttons">
-  <button onClick={() => setShowCreateExpense(true)} className="nav-link">Create Expense</button>
-  <button onClick={() => setShowSplitExpense(true)} className="nav-link">Split Expense</button>
-</div>
-      {/* Expense Modal */}
+      {user && (
+        <div className="navbar-buttons">
+          <button onClick={() => setShowCreateExpense(true)} className="nav-link">Create Expense</button>
+          <button onClick={() => setShowSplitExpense(true)} className="nav-link">Split Expense</button>
+        </div>
+      )}
+
+      {/* Expense Modals */}
       {showCreateExpense && (
         <Modal onClose={() => setShowCreateExpense(false)}>
           <CreateExpense
@@ -45,7 +51,6 @@ const NavBar = () => {
         </Modal>
       )}
 
-      {/* For now, we use the same modal as a placeholder for Split */}
       {showSplitExpense && (
         <Modal onClose={() => setShowSplitExpense(false)}>
           <CreateExpense
