@@ -3,10 +3,7 @@
 const SET_USER = 'session/SET_USER';
 const REMOVE_USER = 'session/REMOVE_USER';
 
-const BASE_URL =
-  process.env.NODE_ENV === 'production'
-    ? 'https://splito.onrender.com'
-    : 'http://localhost:8000';
+const BASE_URL = process.env.REACT_APP_API_URL || '';
 
 // Action Creators
 const setUser = (user) => ({
@@ -55,27 +52,19 @@ export const authenticate = () => async (dispatch) => {
 export const login = (email, password) => async (dispatch) => {
   try {
     await fetch(`${BASE_URL}/api/auth/csrf-token`, { credentials: 'include' });
-    const csrfToken = getCSRFToken();
-
     const response = await fetch(`${BASE_URL}/api/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRFToken': csrfToken,
+        'X-CSRFToken': getcsrfToken(),
       },
       credentials: 'include',
       body: JSON.stringify({ email, password }),
     });
 
-    if (response.ok) {
-      const data = await response.json();
-      dispatch(setUser(data));
-      return null;
-    } else {
-      const data = await response.json();
-      return data.errors || ['Login failed.'];
-    }
-  } catch (err) {
+    if (!response.ok) return (await response.json()).errors;
+    dispatch(setUser(await response.json()));
+    catch (err) {
     return ['Network error. Please try again.'];
   }
 };
