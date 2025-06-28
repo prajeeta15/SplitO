@@ -1,97 +1,94 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+
+import { authenticate } from './store/session';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+
+import NavBar from './components/NavBar';
+import SplashPage from './components/SplashPage';
 import LoginForm from './components/auth/LoginForm';
 import SignUpForm from './components/auth/SignUpForm';
-import NavBar from './components/NavBar';
-import ProtectedRoute from './components/auth/ProtectedRoute';
+import Dashboard from './components/Dashboard/Dashboard';
+import AllExpenses from './components/AllExpenses';
 import UsersList from './components/UsersList';
 import User from './components/User';
-import { authenticate } from './store/session';
-import CommentsOfExpense from './components/Comment/Comment';
-import Dashboard from './components/Dashboard/Dashboard';
-
-import SplashPage from './components/SplashPage';
-import AllExpenses from './components/AllExpenses';
 import FriendSideBar from './components/friends/SideBar';
 import FriendDetail from './components/friends/FriendDetail';
+import DeleteWarning from './components/friends/DeleteWarning';
 import GroupsSidebar from './components/Groups/GroupsSidebar';
 import GroupDetails from './components/Groups/GroupDetails';
 import CreateGroupForm from './components/Groups/CreateGroupForm';
-import Template from './components/Template/Template';
 import AddGroupMemberForm from './components/Groups/AddGroupMemberForm';
-import DeleteWarning from './components/friends/DeleteWarning';
 import EditGroupForm from './components/Groups/EditGroupForm';
+import Template from './components/Template/Template';
 
 function App() {
-  const [loaded, setLoaded] = useState(false);
   const dispatch = useDispatch();
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    (async() => {
-      await dispatch(authenticate());
-      setLoaded(true);
-    })();
+    // Ensure user session is restored BEFORE rendering anything
+    dispatch(authenticate()).then(() => setIsLoaded(true));
   }, [dispatch]);
 
-  if (!loaded) {
-    return null;
-  }
+  if (!isLoaded) return null; // prevents render flickering before auth
 
   return (
     <BrowserRouter>
       <NavBar />
       <Switch>
-        <Route path='/template' exact={true} >
-          <Template />
-        </Route>
-        <Route path='/login' exact={true}>
-          <LoginForm />
-        </Route>
-        <Route path='/sign-up' exact={true}>
-          <SignUpForm />
-        </Route>
-        <ProtectedRoute path='/users' exact={true} >
-          <UsersList/>
-        </ProtectedRoute>
-        <ProtectedRoute path='/friends/current' exact={true} >
-          <FriendSideBar/>
-        </ProtectedRoute>
-        <ProtectedRoute path='/friends/delete' exact={true} >
-          <DeleteWarning/>
-        </ProtectedRoute>
-        <ProtectedRoute path='/friends/:friendId' exact={true} >
-          <FriendDetail/>
-        </ProtectedRoute>
-        <ProtectedRoute path='/users/:userId' exact={true} >
-          <User />
-        </ProtectedRoute>
-        <ProtectedRoute path='/dashboard' exact={true}>
-          <Dashboard />
-        </ProtectedRoute>
-        {/* <ProtectedRoute path='/expenses/:expenseId/comments' exact={true} >
-          <CommentsOfExpense />
-        </ProtectedRoute> */}
-        <Route path='/' exact={true} >
+        <Route path="/" exact>
           <SplashPage />
         </Route>
-        <ProtectedRoute path='/expenses/all' exact={true}>
-            <AllExpenses />
+        <Route path="/login" exact>
+          <LoginForm />
+        </Route>
+        <Route path="/sign-up" exact>
+          <SignUpForm />
+        </Route>
+        <Route path="/template" exact>
+          <Template />
+        </Route>
+
+        <ProtectedRoute path="/dashboard" exact>
+          <Dashboard />
         </ProtectedRoute>
-        <ProtectedRoute path='/groups/current' exact={true}>
+        <ProtectedRoute path="/expenses/all" exact>
+          <AllExpenses />
+        </ProtectedRoute>
+
+        <ProtectedRoute path="/users" exact>
+          <UsersList />
+        </ProtectedRoute>
+        <ProtectedRoute path="/users/:userId" exact>
+          <User />
+        </ProtectedRoute>
+
+        <ProtectedRoute path="/friends/current" exact>
+          <FriendSideBar />
+        </ProtectedRoute>
+        <ProtectedRoute path="/friends/delete" exact>
+          <DeleteWarning />
+        </ProtectedRoute>
+        <ProtectedRoute path="/friends/:friendId" exact>
+          <FriendDetail />
+        </ProtectedRoute>
+
+        <ProtectedRoute path="/groups/current" exact>
           <GroupsSidebar />
         </ProtectedRoute>
-        <ProtectedRoute path='/groups/new' exact={true}>
+        <ProtectedRoute path="/groups/new" exact>
           <CreateGroupForm />
         </ProtectedRoute>
-        <ProtectedRoute path='/groups/:groupId' exact={true}>
-          <GroupDetails />
+        <ProtectedRoute path="/groups/:groupId/edit" exact>
+          <EditGroupForm />
         </ProtectedRoute>
-        <ProtectedRoute path='/groups/:groupId/members/add' exact={true}>
+        <ProtectedRoute path="/groups/:groupId/members/add" exact>
           <AddGroupMemberForm />
         </ProtectedRoute>
-        <ProtectedRoute path='/groups/:groupId/edit' exact={true}>
-          <EditGroupForm />
+        <ProtectedRoute path="/groups/:groupId" exact>
+          <GroupDetails />
         </ProtectedRoute>
       </Switch>
     </BrowserRouter>
