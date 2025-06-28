@@ -22,50 +22,38 @@ function getCSRFToken() {
 }
 
 // Thunks
-
 export const authenticate = () => async (dispatch) => {
   try {
-    await fetch(`${BASE_URL}/api/auth/csrf-token`, {
-      credentials: 'include',
-    });
-
-    const res = await fetch(`${BASE_URL}/api/auth/`, {
-      credentials: 'include',
-    });
-
+    await fetch(`${BASE_URL}/api/auth/csrf-token`, { credentials: 'include' });
+    const res = await fetch(`${BASE_URL}/api/auth/`, { credentials: 'include' });
     if (res.ok) {
       const data = await res.json();
-      if (!data.errors) {
-        dispatch(setUser(data));
-      } else {
-        dispatch(removeUser());
-      }
-    } else {
-      dispatch(removeUser());
-    }
-  } catch (err) {
-    console.error('Auth error:', err);
+      if (!data.errors) dispatch(setUser(data));
+      else dispatch(removeUser());
+    } else dispatch(removeUser());
+  } catch {
+    console.error('auth failed');
     dispatch(removeUser());
   }
 };
 
-export const login = (email, password) => async (dispatch) => {
-  try {
-    await fetch(`${BASE_URL}/api/auth/csrf-token`, { credentials: 'include' });
-    const response = await fetch(`${BASE_URL}/api/auth/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': getcsrfToken(),
-      },
-      credentials: 'include',
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (!response.ok) return (await response.json()).errors;
+export const login = (email,password) => async dispatch => {
+  await fetch(`${BASE_URL}/api/auth/csrf-token`, { credentials: 'include' });
+  const response = await fetch(`${BASE_URL}/api/auth/login`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': getCSRFToken()
+    },
+    body: JSON.stringify({ email,password })
+  });
+  if (response.ok) {
     dispatch(setUser(await response.json()));
-    catch (err) {
-    return ['Network error. Please try again.'];
+    return null;
+  } else {
+    const data = await response.json();
+    return data.errors;
   }
 };
 
