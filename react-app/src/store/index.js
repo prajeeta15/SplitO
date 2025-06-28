@@ -1,23 +1,20 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
+
+import sessionReducer from './session';
 import expensesReducer from './expense';
-import session from './session'
-import friendReducer,{friendDetailReducer} from './friends';
+import friendReducer, { friendDetailReducer } from './friends';
 import groupsReducer from './groups';
 import commentsReducer from './comments';
 
-
 const rootReducer = combineReducers({
-  session,
+  session: sessionReducer,
   expense: expensesReducer,
-  friends:friendReducer,
+  friends: friendReducer,
   friendDetail: friendDetailReducer,
   groups: groupsReducer,
-  comment: commentsReducer
+  comment: commentsReducer,
 });
-
-
-
 
 let enhancer;
 
@@ -33,7 +30,7 @@ if (process.env.NODE_ENV === 'production') {
 const store = createStore(rootReducer, enhancer);
 
 if (process.env.NODE_ENV !== 'production') {
-  window.store = store; 
+  window.store = store;
 }
 
 export default store;
